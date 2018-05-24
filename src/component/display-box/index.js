@@ -19,7 +19,7 @@ class DisplayBox extends React.Component {
   }
 
   handleCheckState() {
-    this.state.value === '' ? this.props.onPicking(this.state) : this.state.checked === false ? this.props.onPicking(this.state) : null;
+    this.state.value === '' ? this.props.onPicking(this.state) : this.state.checked === false ? this.props.onPlay(this.state) : null;
   }
 
 

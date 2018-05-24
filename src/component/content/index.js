@@ -23,6 +23,7 @@ class Content extends React.Component {
       winner: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePlay = this.handlePlay.bind(this);
     this.handleCheckForWinner = this.handleCheckForWinner.bind(this);
     this.handleAutoBuild = this.handleAutoBuild.bind(this);
     this.handleReset = this.handleReset.bind(this);
@@ -60,20 +61,8 @@ class Content extends React.Component {
     }
   }
 
-  handleSubmit(e) {
-    if (this.state.setup === true) {
-      let value = this.state.number;
-      let temp = this.state.board;
-      console.log('this is val',value);
-      temp[e.location.arr][e.location.idx].val = value;
-      console.log('SET UP BOARD', {i:e.location.arr, y:e.location.idx});
-      return Promise.resolve(this.setState({board: temp, number: value + 1}))
-        .then(() => {
-          if (this.state.number > 25) {
-            this.setState({setup: false});
-          }
-        });
-    } else {
+  handlePlay(e) {
+    if (!this.state.setup) {
       let temp = this.state.board;
       temp[e.location.arr][e.location.idx].mark = true;
       console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
@@ -82,6 +71,19 @@ class Content extends React.Component {
           this.handleCheckForWinner()
           ;});
     }
+  }
+
+  handleSubmit(e) {
+    let value = this.state.number;
+    let temp = this.state.board;
+    temp[e.location.arr][e.location.idx].val = value;
+    console.log('SET UP BOARD', {i:e.location.arr, y:e.location.idx});
+    return Promise.resolve(this.setState({board: temp, number: value + 1}))
+      .then(() => {
+        if (this.state.number > 25) {
+          this.setState({setup: false});
+        }
+      });
   }
 
   render() {
@@ -105,6 +107,7 @@ class Content extends React.Component {
                 marked={this.state.board[arr][idx].mark}
                 value={this.state.board[arr][idx].val}
                 onPicking={this.handleSubmit}
+                onPlay={this.handlePlay}
               />;
             });
           })
