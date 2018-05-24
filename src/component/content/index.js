@@ -25,6 +25,22 @@ class Content extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCheckForWinner = this.handleCheckForWinner.bind(this);
     this.handleAutoBuild = this.handleAutoBuild.bind(this);
+    this.handleReset = this.handleReset.bind(this);
+  }
+
+  handleReset() {
+    this.setState({
+      board: [
+        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+      ],
+      number: 1,
+      setup: true,
+      winner: false,
+    });
   }
 
   handleCheckForWinner() {
@@ -37,9 +53,11 @@ class Content extends React.Component {
   }
 
   handleAutoBuild(grid) {
-    let newBoard = RandomSpot.getRandom(grid);
-    this.setState({board: newBoard, number: 25, setup: false});
-    console.log('inside', this.state);
+    if (this.state.setup) {
+      let newBoard = RandomSpot.getRandom(grid);
+      this.setState({board: newBoard, number: 25, setup: false});
+      console.log('inside', this.state);
+    }
   }
 
   handleSubmit(e) {
@@ -76,6 +94,7 @@ class Content extends React.Component {
         </div>
 
         <button className="autoBuild" onClick={() => this.handleAutoBuild(this.state.board)}> Auto Build </button>
+        <button className="reset" onClick={() => this.handleReset()}>RESET GAME</button>
 
         {/* build the board */}
         <div className="boxes">

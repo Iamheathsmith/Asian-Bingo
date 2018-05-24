@@ -2,13 +2,11 @@
 
 module.exports = new class {
   checkWinner(grid) {
-    console.log('board', grid);
     if (grid.length !== grid[0].length) return 'need to be a square';
     let holder = [];
     for (let i = 0; i < grid.length; i++) {
       // check across
       if (grid[i][0].mark === true) {
-        console.log('checking', grid[i][0]);
         let test = this.checkAcross(grid[i]);
         if (test === 'winner') {
           holder.push(test);

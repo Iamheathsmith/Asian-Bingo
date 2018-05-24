@@ -9,6 +9,7 @@ class DisplayBox extends React.Component {
       value:  this.props.value || '',
       checked: this.props.marked || false,
     };
+    this.handleCheckState = this.handleCheckState.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -17,11 +18,15 @@ class DisplayBox extends React.Component {
     }
   }
 
+  handleCheckState() {
+    this.state.value === '' ? this.props.onPicking(this.state) : this.state.checked === false ? this.props.onPicking(this.state) : null;
+  }
+
+
   render() {
     return (
       <div className={this.state.checked === true ? 'box' : 'box4'}
-        onClick={this.state.value === '' ? () => this.props.onPicking(this.state) : null}
-        onClick={this.state.checked === false ? () => this.props.onPicking(this.state) : null} >
+        onClick={() => this.handleCheckState()}>
         <h1 className="num"> {this.state.value} </h1>
       </div>
     );
