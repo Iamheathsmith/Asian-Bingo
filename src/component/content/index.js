@@ -48,7 +48,6 @@ class Content extends React.Component {
     let checkGame = Check.checkWinner(this.state.board);
     if (checkGame === 'winner') {
       this.setState({winner: true});
-      console.log(this.state);
       return;
     }
   }
@@ -57,7 +56,6 @@ class Content extends React.Component {
     if (this.state.setup) {
       let newBoard = RandomSpot.getRandom(grid);
       this.setState({board: newBoard, number: 25, setup: false});
-      console.log('inside', this.state);
     }
   }
 
