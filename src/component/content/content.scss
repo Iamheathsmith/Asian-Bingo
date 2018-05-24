@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+
+
+header {
+  font-family: 'Amatic SC', cursive;
+  font-size: 56px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.boxes {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media screen and (max-width: 640px) {
+  .input-area {
+    margin: 0 auto;
+    width: 300px;
+    float: none;
+  }
+
+  .location-name {
+    font-size: 9vw;
+  }
+}
+
+@media screen and (min-width: 680px) {
+  .boxes {
+    width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  header {
+    font-family: 'Amatic SC', cursive;
+    font-size: 40px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+}
