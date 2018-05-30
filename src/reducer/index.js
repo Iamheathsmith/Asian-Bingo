@@ -1,7 +1,9 @@
 
+import sockets from './sockets';
 import {combineReducers} from 'redux';
-import addLocation from './addLocation';
+import roomBuilder from './room-builder';
 
 export default combineReducers({
-  location: addLocation,
+  room: roomBuilder,
+  socket: sockets,
 });

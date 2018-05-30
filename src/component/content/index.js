@@ -5,11 +5,15 @@ import Check from '../../lib/check-winner';
 import RandomSpot from '../../lib/random-spot';
 import {connect} from 'react-redux';
 import DisplayBox from '../display-box/index';
-import * as locationActions from  '../../action/find-location';
+import * as roomBuilder from  '../../action/make-room';
 
 class Content extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = this.props.socket;
+    this.roomCode = this.props.room.roomCode;
+    this.isHost = this.props.room.isHost;
+
     this.state = {
       board: [
         [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
@@ -28,6 +32,17 @@ class Content extends React.Component {
     this.handleAutoBuild = this.handleAutoBuild.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
+  componentDidMount() {
+    console.log('gameview: component did mount');
+    // when the host clicks the start game button, redirects all players from waitingroom to gameview page also
+    if (this.isHost) {
+      console.log('isHost', this.props.room.nickname);
+      this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
+      // this.startGame();
+    }
+  }
+
 
   handleReset() {
     this.setState({
@@ -117,11 +132,12 @@ class Content extends React.Component {
 }
 
 let mapStateToProps = state => ({
-  location: state.location,
+  room: state.room,
+  socket: state.socket,
 });
 
 const mapDispatchToProps = dispatch => ({
-  addLocation : search => dispatch(locationActions.addLocationAction(search)),
+  roomBuilder : search => dispatch(roomBuilder.roomSet(search)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Content);

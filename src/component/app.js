@@ -13,7 +13,18 @@ import {BrowserRouter, Route, Redirect} from 'react-router-dom';
 
 const store = createStore();
 
-export default class App extends React.Component {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      socket: this.props.socket,
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.socket)
+      store.dispatch({ type: 'SOCKET_SET', payload: this.props.socket });
+  }
 
   render() {
     return (
@@ -32,3 +43,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default App;

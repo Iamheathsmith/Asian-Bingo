@@ -1,19 +1,19 @@
 import React from 'react';
 import Nav from '../nav/index';
-import Test from '../build-game/index';
-import { Link } from 'react-router-dom';
-// import './input-area.scss';
+import { connect } from 'react-redux';
+import { renderIf } from '../../lib/utils';
+import { Link, Redirect } from 'react-router-dom';
+import * as roomActions from  '../../action/make-room';
 
 class Landing extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     location: this.props.boxLocation,
-  //     value:  this.props.value || '',
-  //     checked: this.props.marked || false,
-  //   };
-  //   this.handleCheckState = this.handleCheckState.bind(this);
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      // isHost: true,
+      redirect: false,
+    };
+    this.handleMakeRoom = this.handleMakeRoom.bind(this);
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps) {
@@ -21,18 +21,31 @@ class Landing extends React.Component {
     }
   }
 
+  handleMakeRoom() {
+    this.props.setRoom({
+      isHost: true,
+    });
+
+    this.setState({ redirect: true });
+  }
+
 
   render() {
     return (
       <div>
         <Nav />
-        <h2 className="welcome"> welcome to Asian Bingo</h2>
-        <button className="btn-host"><Link to={'/WaitingRoom'}>Host Game</Link></button>
+        <h2 className="welcome"> welcome to Bingo</h2>
+        <button className="btn-host" onClick={this.handleMakeRoom}>Host Game</button>
         <button className="btn-join"><Link to={'/JoinRoom'}>Join Game</Link></button>
+
+        {renderIf(this.state.redirect, <Redirect to="/waitingroom" />)}
       </div>
     );
   }
 }
 
+let mapDispatchToProps = dispatch => ({
+  setRoom: room => dispatch(roomActions.roomSet(room)),
+});
 
-export default Landing;
+export default connect(null, mapDispatchToProps)(Landing);
