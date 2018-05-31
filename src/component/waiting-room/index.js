@@ -19,6 +19,7 @@ class WaitingRoom extends React.Component {
       roomCode: null,
       playerNames: [],
       redirectToGameView: false,
+      redirectToLandingPage: false,
     };
   }
 
@@ -26,7 +27,7 @@ class WaitingRoom extends React.Component {
     // if isHost is true
     if (this.isHost) {
       // creating a room
-      this.socket.emit('CREATE_ROOM', this.game, this.instance);
+      this.socket.emit('CREATE_ROOM');
 
       // receiving a room w/code back from back end
       this.socket.on('SEND_ROOM', data => {
@@ -34,6 +35,7 @@ class WaitingRoom extends React.Component {
         let {roomCode, game, maxPlayers, roomHost} = data;
 
         this.props.setRoom({
+          hostName: this.props.room.hostName,
           roomCode: roomCode,
           isHost: this.isHost,
           numPlayers: maxPlayers,
@@ -46,6 +48,7 @@ class WaitingRoom extends React.Component {
         let socket = this.socket;
 
         this.props.setSocket(socket);
+        this.socket.emit('JOIN_ROOM', roomCode, this.props.room.hostName);
 
         console.log('__ROOM_CODE__', this.props.room.roomCode);
       });
@@ -64,10 +67,16 @@ class WaitingRoom extends React.Component {
       this.setState({ redirectToGameView: true });
     });
 
-    // // if the host disconnects, redirects to errorview
-    // this.socket.on('REDIRECT_DISCONNECT', () => {
-    //   this.setState({ redirectToErrorView: true });
-    // });
+    // if the host disconnects, redirects to Landing page.
+    this.socket.on('REDIRECT_DISCONNECT', () => {
+      this.setState({ redirectToLandingPage: true });
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.isHost) {
+      this.socket.emit('REDIRECT_PLAYERS', this.state.roomCode);
+    }
   }
 
   render() {
@@ -90,7 +99,6 @@ class WaitingRoom extends React.Component {
               </tr>
               <tr>
                 <td className="left">Players</td>
-                <td className="right secondary-color">{this.state.playerNames}</td>
               </tr>
               <tr>
                 <td colSpan="2" className="left secondary-color">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.join(', ')}</td>
@@ -100,15 +108,16 @@ class WaitingRoom extends React.Component {
 
           <br /><br />
 
-          {renderIf(this.isHost && this.state.numPlayers > 0, <Link to={{ pathname: '/game' }}>
+          {renderIf(this.isHost && this.state.numPlayers >= 2, <Link to={{ pathname: '/game' }}>
             <button type="button" className="startgame-button submit" id="start-game">Start Game</button>
           </Link>)}
 
-          {renderIf(this.isHost && !this.state.numPlayers, <span className="tooltip">Waiting for players to join...</span>)}
+          {renderIf(this.isHost && this.state.numPlayers < 2, <span className="tooltip">Waiting for players to join...</span>)}
 
           {renderIf(!this.isHost, <span className="tooltip">Waiting for host to start game...</span>)}
 
           {renderIf(this.state.redirectToGameView, <Redirect to="/game" />)}
+          {renderIf(this.state.redirectToLandingPage, <Redirect to="/" />)}
 
         </div>
       </React.Fragment>

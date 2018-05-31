@@ -9,10 +9,11 @@ class Landing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // isHost: true,
       redirect: false,
+      name: '',
     };
     this.handleMakeRoom = this.handleMakeRoom.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -22,12 +23,15 @@ class Landing extends React.Component {
   }
 
   handleMakeRoom() {
-    this.props.setRoom({
-      isHost: true,
-    });
-
+    this.props.setRoom({isHost: true, hostName: this.state.name});
     this.setState({ redirect: true });
   }
+
+  handleChange(e) {
+    let {name, value} = e.target;
+    this.setState({[name]: value});
+  };
+
 
 
   render() {
@@ -35,6 +39,12 @@ class Landing extends React.Component {
       <div>
         <Nav />
         <h2 className="welcome"> welcome to Bingo</h2>
+        <input
+          type="text"
+          name="name"
+          placeholder="host name"
+          value={this.state.name}
+          onChange={this.handleChange}/>
         <button className="btn-host" onClick={this.handleMakeRoom}>Host Game</button>
         <button className="btn-join"><Link to={'/JoinRoom'}>Join Game</Link></button>
 

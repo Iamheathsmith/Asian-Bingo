@@ -1,0 +1,28 @@
+.modal {
+  margin: 20vw;
+  font-size: 30px;
+  text-align: center;
+  color: white;
+}
+
+.winner {
+  font-size: 100px;
+}
+
+.btn {
+  text-transform: capitalize;
+  background: white;
+  width: 100px;
+  height: 30px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.invis {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .5);
+}

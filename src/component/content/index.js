@@ -1,10 +1,13 @@
 
 import './content.scss';
 import React from 'react';
-import Check from '../../lib/check-winner';
-import RandomSpot from '../../lib/random-spot';
+import Modal from '../modal/index';
 import {connect} from 'react-redux';
+import Counter from '../count-down/index';
+import Check from '../../lib/check-winner';
+import { renderIf } from '../../lib/utils';
 import DisplayBox from '../display-box/index';
+import RandomSpot from '../../lib/random-spot';
 import * as roomBuilder from  '../../action/make-room';
 
 class Content extends React.Component {
@@ -24,65 +27,143 @@ class Content extends React.Component {
       ],
       number: 1,
       setup: true,
+      myTurn: false,
       winner: false,
+      gameOver: false,
+      preGame: false,
+      lastPlayed: null,
+      counter: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.handleCheckForWinner = this.handleCheckForWinner.bind(this);
     this.handleAutoBuild = this.handleAutoBuild.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.handleUpdateData = this.handleUpdateData.bind(this);
+    this.handlePlayAgain = this.handlePlayAgain.bind(this);
   }
 
   componentDidMount() {
-    console.log('gameview: component did mount');
-    // when the host clicks the start game button, redirects all players from waitingroom to gameview page also
     if (this.isHost) {
-      console.log('isHost', this.props.room.nickname);
       this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
-      // this.startGame();
+    } else {
+      this.setState({myTurn: true});
     }
+  }
+
+  componentWillMount() {
+    this.socket.on('SWITCH TURNS', data => {
+      this.handleUpdateData(data);
+      this.setState({ myTurn: true });
+    });
+
+    this.socket.on('GAME OVER', data => {
+      this.setState({gameOver: true });
+    });
+
+    this.socket.on('RESET', () => {
+      if (!this.state.winner) {
+        this.setState({ myTurn: true });
+      };
+      this.handleReset();
+    });
+
+    this.socket.on('COUNT DOWN', () => {
+      this.setState({ counter: true});
+    });
+
+    this.socket.on('PLAY GAME', () => {
+      if (!this.isHost) {
+        this.setState({ setup: false, preGame: false , counter: false, myTurn: true});
+      } else {
+        this.setState({ setup: false, preGame: false , counter: false});
+      }
+    });
   }
 
 
   handleReset() {
-    this.setState({
-      board: [
-        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
-        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
-        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
-        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
-        [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
-      ],
-      number: 1,
-      setup: true,
-      winner: false,
-    });
+    if (this.state.gameOver) {
+      this.setState({
+        board: [
+          [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+          [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+          [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+          [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+          [{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false},{val:'', mark: false}],
+        ],
+        number: 1,
+        setup: true,
+        myTurn: false,
+        winner: false,
+        gameOver: false,
+        preGame: false,
+        lastPlayed: null,
+        counter: false,
+      });
+    };
+  }
+
+  handlePlayAgain() {
+    console.log('inside playagain');
+    let goFirst = this.state.winner;
+    this.handleReset();
+    console.log('this is goFrist', goFirst);
+    if (!this.isHost) {
+      this.setState({ myTurn: true });
+      this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
+    };
   }
 
   handleCheckForWinner() {
     let checkGame = Check.checkWinner(this.state.board);
     if (checkGame === 'winner') {
-      this.setState({winner: true});
-      return;
+      this.socket.emit('GAME WON', this.roomCode);
+      this.setState({winner: true, gameOver: true});
     }
   }
 
   handleAutoBuild(grid) {
     if (this.state.setup) {
       let newBoard = RandomSpot.getRandom(grid);
-      this.setState({board: newBoard, number: 25, setup: false});
+      this.setState({board: newBoard, number: 25, setup: false, preGame: true});
+      this.socket.emit('READY FOR GAME', this.roomCode);
     }
   }
 
-  handlePlay(e) {
-    if (!this.state.setup) {
+  handleUpdateData(num) {
+    if (!this.state.myTurn) {
       let temp = this.state.board;
-      temp[e.location.arr][e.location.idx].mark = true;
-      console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
+      for(let i = 0; i < temp.length; i++) {
+        for (let y = 0; y < temp[i].length; y++) {
+          if (temp[i][y].val === num) {
+            console.log('found it');
+            temp[i][y].mark = true;
+          }
+        }
+      }
       return Promise.resolve(this.setState({board: temp}))
         .then(() => {
           this.handleCheckForWinner()
           ;});
+    }
+  }
+
+  handlePlay(e) {
+    if (!this.state.setup && this.state.myTurn) {
+      let temp = this.state.board;
+      temp[e.location.arr][e.location.idx].mark = true;
+      let played = temp[e.location.arr][e.location.idx].val;
+      console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
+      return Promise.resolve(this.setState({board: temp, myTurn: false, lastPlayed: played}))
+        .then(() => {
+          this.handleCheckForWinner()
+          ;})
+        .then(() => {
+          if (!this.state.winner) {
+            this.socket.emit('NEXT TURN', this.state.lastPlayed, this.roomCode);
+          }
+        });
     }
   }
 
@@ -93,8 +174,8 @@ class Content extends React.Component {
     console.log('SET UP BOARD', {i:e.location.arr, y:e.location.idx});
     return Promise.resolve(this.setState({board: temp, number: value + 1}))
       .then(() => {
-        if (this.state.number > 25) {
-          this.setState({setup: false});
+        if (this.state.number === 26) {
+          this.socket.emit('READY FOR GAME', this.roomCode);
         }
       });
   }
@@ -102,14 +183,13 @@ class Content extends React.Component {
   render() {
     return (
       <div className="main">
-        <header>Asian Bingo! was his name O!</header>
+        <header>Welcome to Bingo! or was it it his name O?</header>
 
         <div className="name-search">
 
         </div>
 
         <button className="autoBuild" onClick={() => this.handleAutoBuild(this.state.board)}> Auto Build </button>
-        <button className="reset" onClick={() => this.handleReset()}>RESET GAME</button>
 
         {/* build the board */}
         <div className="boxes">
@@ -126,6 +206,29 @@ class Content extends React.Component {
           })
           }
         </div>
+        {/* for winner/loser */}
+        {renderIf(this.state.gameOver,
+          <Modal
+            saying1='congrats you win!'
+            saying2='sorry you lose!'
+            winner={this.state.winner}
+          />
+        )}
+        {/* stand by for players */}
+        {renderIf(this.state.preGame && !this.state.counter,
+          <Modal
+            saying2='Get ready to play!'
+            disabledBTN={true}
+          />
+        )}
+        {/* count down */}
+        {renderIf(this.state.counter,
+          <Counter />
+        )}
+        {/* progress bar */}
+        {renderIf(this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame,
+          <div className="progress-bar"><div className="progress"></div></div>
+        )}
       </div>
     );
   }
@@ -134,6 +237,7 @@ class Content extends React.Component {
 let mapStateToProps = state => ({
   room: state.room,
   socket: state.socket,
+  peopleInGame: state.peopleInGame,
 });
 
 const mapDispatchToProps = dispatch => ({

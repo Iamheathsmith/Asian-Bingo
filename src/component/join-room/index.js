@@ -39,7 +39,7 @@ class JoinRoom extends React.Component {
       let nickname = this.state.nickname.toUpperCase();
 
       this.props.setRoom({
-        code: code,
+        roomCode: code,
         nickname: nickname,
         isHost: false,
         maxPlayers: maxPlayers,

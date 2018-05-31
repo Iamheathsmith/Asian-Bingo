@@ -38,7 +38,10 @@ module.exports = new class {
 
     console.log('holder', holder);
 
-    if (holder.length === 5) {
+    // if (holder.length >= 5) {
+    //   return 'winner';
+    // }
+    if (holder.length >= 1) {
       return 'winner';
     }
   }
