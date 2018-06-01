@@ -51,7 +51,10 @@ class Modal extends React.Component {
             </div>
           )}
           {renderIf(this.state.waiting && !this.state.gameOver,
-            <h2>Waiting on other Players</h2>
+            <h2>{this.props.saying}</h2>
+          )}
+          {renderIf(this.state.waiting,
+            <h2>{this.props.saying3}</h2>
           )}
           {renderIf(this.state.gameOver,
             <div className="game-over">

@@ -46,7 +46,7 @@ class Counter extends React.Component {
       <div className="invis">
         <section className="modal">
           {renderIf(this.state.time > 0,
-            <h2>THIS IS TIMER: {this.state.time}</h2>
+            <h2 className="counter">{this.state.time}</h2>
           )}
         </section>
       </div>

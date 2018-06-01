@@ -8,6 +8,7 @@ import Check from '../../lib/check-winner';
 import { renderIf } from '../../lib/utils';
 import DisplayBox from '../display-box/index';
 import RandomSpot from '../../lib/random-spot';
+import PickRandom from '../../lib/pick-random';
 import * as roomBuilder from  '../../action/make-room';
 
 class Content extends React.Component {
@@ -33,6 +34,7 @@ class Content extends React.Component {
       preGame: false,
       lastPlayed: null,
       counter: false,
+      failed2Play: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
@@ -41,6 +43,7 @@ class Content extends React.Component {
     this.handleReset = this.handleReset.bind(this);
     this.handleUpdateData = this.handleUpdateData.bind(this);
     this.handlePlayAgain = this.handlePlayAgain.bind(this);
+    this.handleRandomPlay = this.handleRandomPlay.bind(this);
   }
 
   componentDidMount() {
@@ -51,10 +54,19 @@ class Content extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame) {
+      this.state.pickRandom = setTimeout(() => this.handleRandomPlay(this.state.board), 10000);
+    }
+    if (!this.state.myTurn && this.state.lastPlayed !== null || this.state.gameOver) {
+      clearTimeout(this.state.pickRandom);
+    }
+  }
+
   componentWillMount() {
     this.socket.on('SWITCH TURNS', data => {
       this.handleUpdateData(data);
-      this.setState({ myTurn: true });
+      this.setState({ myTurn: true, failed2Play: false });
     });
 
     this.socket.on('GAME OVER', data => {
@@ -81,6 +93,22 @@ class Content extends React.Component {
     });
   }
 
+  handleRandomPlay(grid) {
+    let randoPick = PickRandom.pickRandom(grid);
+    let temp = this.state.board;
+    temp[randoPick.i][randoPick.y].mark = true;
+    let played = temp[randoPick.i][randoPick.y].val;
+    return Promise.resolve(this.setState({board: temp, myTurn: false, lastPlayed: played, failed2Play: true}))
+      .then(() => {
+        this.handleCheckForWinner()
+        ;})
+      .then(() => {
+        if (!this.state.winner) {
+          this.socket.emit('NEXT TURN', this.state.lastPlayed, this.roomCode);
+        }
+      });
+  }
+
 
   handleReset() {
     if (this.state.gameOver) {
@@ -105,10 +133,8 @@ class Content extends React.Component {
   }
 
   handlePlayAgain() {
-    console.log('inside playagain');
     let goFirst = this.state.winner;
     this.handleReset();
-    console.log('this is goFrist', goFirst);
     if (!this.isHost) {
       this.setState({ myTurn: true });
       this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
@@ -137,7 +163,6 @@ class Content extends React.Component {
       for(let i = 0; i < temp.length; i++) {
         for (let y = 0; y < temp[i].length; y++) {
           if (temp[i][y].val === num) {
-            console.log('found it');
             temp[i][y].mark = true;
           }
         }
@@ -183,11 +208,7 @@ class Content extends React.Component {
   render() {
     return (
       <div className="main">
-        <header>Welcome to Bingo! or was it it his name O?</header>
-
-        <div className="name-search">
-
-        </div>
+        <header>Welcome to Bingo! The last game you will ever play?</header>
 
         <button className="autoBuild" onClick={() => this.handleAutoBuild(this.state.board)}> Auto Build </button>
 
@@ -217,8 +238,14 @@ class Content extends React.Component {
         {/* stand by for players */}
         {renderIf(this.state.preGame && !this.state.counter,
           <Modal
-            saying2='Get ready to play!'
+            saying='Waiting on other Players!'
             disabledBTN={true}
+          />
+        )}
+        {renderIf(this.state.failed2Play,
+          <Modal
+            disabledBTN={true}
+            saying3='You Missed your turn, make sure you click something'
           />
         )}
         {/* count down */}
@@ -237,7 +264,6 @@ class Content extends React.Component {
 let mapStateToProps = state => ({
   room: state.room,
   socket: state.socket,
-  peopleInGame: state.peopleInGame,
 });
 
 const mapDispatchToProps = dispatch => ({
