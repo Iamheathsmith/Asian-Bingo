@@ -1,4 +1,5 @@
 import React from 'react';
+import './join-room.scss';
 import {connect} from 'react-redux';
 import { renderIf } from '../../lib/utils';
 import { Redirect, Link } from 'react-router-dom';
@@ -57,7 +58,7 @@ class JoinRoom extends React.Component {
             <h1 className="joinroom-h1">Join Room</h1>
           </header>
 
-          <form id="joinroom" className="joinroom-form" onSubmit={this.handleSubmit}>
+          <form className="joinroom-form" onSubmit={this.handleSubmit}>
 
             <div className="joinroom-div">Room Code:</div>
             <input name="code" className="joinroom-input" id="joinroom-roomcode" type="text" placeholder="Room Code" onChange={this.handleChange} required />

@@ -1,3 +1,4 @@
+import './landing.scss';
 import React from 'react';
 import Nav from '../nav/index';
 import { connect } from 'react-redux';
@@ -37,17 +38,24 @@ class Landing extends React.Component {
   render() {
     return (
       <div>
-        <Nav />
-        <h2 className="welcome"> welcome to Bingo</h2>
-        <input
-          type="text"
-          name="name"
-          placeholder="host name"
-          value={this.state.name}
-          onChange={this.handleChange}/>
-        <button className="btn-host" onClick={this.handleMakeRoom}>Host Game</button>
-        <button className="btn-join"><Link to={'/JoinRoom'}>Join Game</Link></button>
-
+        <h1 className="logo"> The Last Bingo you will ever play!</h1>
+        {/* <Nav /> */}
+        <div className="input-forms">
+          <div className="leftSide">
+            <h2 className="welcome left"> Host a Game</h2>
+            <input className="left"
+              type="text"
+              name="name"
+              placeholder="host name"
+              value={this.state.name}
+              onChange={this.handleChange}/>
+            <button className="btn-host" onClick={this.handleMakeRoom}>Host Game</button>
+          </div>
+          <div className="rightSide">
+            <h2 className="welcome right"> Join a Game</h2>
+            <button className="btn-join"><Link to={'/JoinRoom'}>Join Game</Link></button>
+          </div>
+        </div>
         {renderIf(this.state.redirect, <Redirect to="/waitingroom" />)}
       </div>
     );

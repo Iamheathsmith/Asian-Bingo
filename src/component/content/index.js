@@ -42,7 +42,6 @@ class Content extends React.Component {
     this.handleAutoBuild = this.handleAutoBuild.bind(this);
     this.handleReset = this.handleReset.bind(this);
     this.handleUpdateData = this.handleUpdateData.bind(this);
-    this.handlePlayAgain = this.handlePlayAgain.bind(this);
     this.handleRandomPlay = this.handleRandomPlay.bind(this);
   }
 
@@ -51,15 +50,16 @@ class Content extends React.Component {
       this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
     } else {
       this.setState({myTurn: true});
+      console.log('SETTING TURN');
     }
   }
 
   componentDidUpdate() {
     if (this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame) {
-      this.state.pickRandom = setTimeout(() => this.handleRandomPlay(this.state.board), 10000);
+      this.pickRandom = setTimeout(() => this.handleRandomPlay(this.state.board), 5000);
     }
-    if (!this.state.myTurn && this.state.lastPlayed !== null || this.state.gameOver) {
-      clearTimeout(this.state.pickRandom);
+    if (!this.state.myTurn && this.state.lastPlayed === null) {
+      clearTimeout(this.pickRandom);
     }
   }
 
@@ -70,14 +70,22 @@ class Content extends React.Component {
     });
 
     this.socket.on('GAME OVER', data => {
-      this.setState({gameOver: true });
+      console.log('kill the countdown');
+      clearTimeout(this.pickRandom);
+      this.setState({gameOver: true, failed2Play: false});
     });
 
-    this.socket.on('RESET', () => {
-      if (!this.state.winner) {
-        this.setState({ myTurn: true });
-      };
+    this.socket.on('WAITING', () => {
+      this.setState({preGame: true});
+    });
+
+    this.socket.on('RESET', data => {
       this.handleReset();
+      if (data !== this.socket.id) {
+        this.setState({myTurn: true});
+      } else {
+        this.setState({myTurn: false});
+      }
     });
 
     this.socket.on('COUNT DOWN', () => {
@@ -86,7 +94,7 @@ class Content extends React.Component {
 
     this.socket.on('PLAY GAME', () => {
       if (!this.isHost) {
-        this.setState({ setup: false, preGame: false , counter: false, myTurn: true});
+        this.setState({ setup: false, preGame: false , counter: false});
       } else {
         this.setState({ setup: false, preGame: false , counter: false});
       }
@@ -100,10 +108,11 @@ class Content extends React.Component {
     let played = temp[randoPick.i][randoPick.y].val;
     return Promise.resolve(this.setState({board: temp, myTurn: false, lastPlayed: played, failed2Play: true}))
       .then(() => {
-        this.handleCheckForWinner()
+        this.handleCheckForWinner();
         ;})
       .then(() => {
         if (!this.state.winner) {
+          clearTimeout(this.pickRandom);
           this.socket.emit('NEXT TURN', this.state.lastPlayed, this.roomCode);
         }
       });
@@ -128,23 +137,17 @@ class Content extends React.Component {
         preGame: false,
         lastPlayed: null,
         counter: false,
+        failed2Play: false,
       });
     };
   }
 
-  handlePlayAgain() {
-    let goFirst = this.state.winner;
-    this.handleReset();
-    if (!this.isHost) {
-      this.setState({ myTurn: true });
-      this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
-    };
-  }
 
   handleCheckForWinner() {
     let checkGame = Check.checkWinner(this.state.board);
     if (checkGame === 'winner') {
-      this.socket.emit('GAME WON', this.roomCode);
+      console.log('FOUND WINNER', this.socket.id);
+      this.socket.emit('GAME WON', this.roomCode, this.socket.id);
       this.setState({winner: true, gameOver: true});
     }
   }
@@ -179,13 +182,15 @@ class Content extends React.Component {
       let temp = this.state.board;
       temp[e.location.arr][e.location.idx].mark = true;
       let played = temp[e.location.arr][e.location.idx].val;
-      console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
+      // console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
+      console.log('PLAYER PLAYED');
       return Promise.resolve(this.setState({board: temp, myTurn: false, lastPlayed: played}))
         .then(() => {
-          this.handleCheckForWinner()
+          this.handleCheckForWinner();
           ;})
         .then(() => {
           if (!this.state.winner) {
+            clearTimeout(this.pickRandom);
             this.socket.emit('NEXT TURN', this.state.lastPlayed, this.roomCode);
           }
         });
@@ -196,7 +201,6 @@ class Content extends React.Component {
     let value = this.state.number;
     let temp = this.state.board;
     temp[e.location.arr][e.location.idx].val = value;
-    console.log('SET UP BOARD', {i:e.location.arr, y:e.location.idx});
     return Promise.resolve(this.setState({board: temp, number: value + 1}))
       .then(() => {
         if (this.state.number === 26) {
@@ -229,7 +233,7 @@ class Content extends React.Component {
         </div>
         {/* for winner/loser */}
         {renderIf(this.state.gameOver,
-          <Modal
+          <Modal className="modal-1"
             saying1='congrats you win!'
             saying2='sorry you lose!'
             winner={this.state.winner}
@@ -237,15 +241,16 @@ class Content extends React.Component {
         )}
         {/* stand by for players */}
         {renderIf(this.state.preGame && !this.state.counter,
-          <Modal
+          <Modal className="modal-2"
             saying='Waiting on other Players!'
             disabledBTN={true}
           />
         )}
-        {renderIf(this.state.failed2Play,
-          <Modal
+        {/* failed to play */}
+        {renderIf(this.state.failed2Play && !this.state.gameOver,
+          <Modal className="modal-3"
             disabledBTN={true}
-            saying3='You Missed your turn, make sure you click something'
+            saying='You Missed your turn, make sure you click something'
           />
         )}
         {/* count down */}

@@ -17,9 +17,7 @@ class Counter extends React.Component {
   }
 
   componentDidMount(){
-    console.log('inside the mount');
     this.counter = setInterval( () =>{
-      console.log('going again', this.state.time);
       this.handleCounter();
       if (this.state.time === 0) {
         clearInterval(this.counter);
@@ -36,7 +34,7 @@ class Counter extends React.Component {
   handleCounter() {
     let time = this.state.time;
     if(time > 0){
-      console.log('inside handlecounter',time);
+      console.log('COUNT DOWN:',time);
       this.setState({time: time - 1});
     }
   }

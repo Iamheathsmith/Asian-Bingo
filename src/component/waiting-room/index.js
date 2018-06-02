@@ -1,4 +1,5 @@
 import React from 'react';
+import './waiting-room.scss';
 import { connect } from 'react-redux';
 import { renderIf } from '../../lib/utils';
 import { Redirect, Link } from 'react-router-dom';
@@ -84,24 +85,24 @@ class WaitingRoom extends React.Component {
       <React.Fragment>
         <div id="waitingroom-wrapper">
           <div className="waitingroom-header">
-            <h1>Waiting Room</h1>
+            <h1 className="waiting">Waiting Room</h1>
           </div>
 
           <table className="waitingroom-table">
             <tbody>
               <tr>
-                <td className="left">Room Code</td>
-                <td className="right secondary-color">:  {this.props.room.roomCode}</td>
+                <td className="left-tr">Room Code:</td>
+                <td className="right-tr">  {this.props.room.roomCode}</td>
               </tr>
               <tr>
-                <td className="left"># Players</td>
-                <td className="right secondary-color">{this.state.numPlayers}</td>
+                <td className="left-tr"># Players:</td>
+                <td className="right-tr">  {this.state.numPlayers}</td>
               </tr>
               <tr>
-                <td className="left">Players</td>
+                <td className="left-tr">Players:</td>
               </tr>
               <tr>
-                <td colSpan="2" className="left secondary-color">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.join(', ')}</td>
+                <td colSpan="2" className="names">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.join(', ')}</td>
               </tr>
             </tbody>
           </table>

@@ -43,6 +43,7 @@ class Modal extends React.Component {
     return (
       <div className="invis">
         <section className="modal">
+          {/* display for end of game with winner/loser */}
           {renderIf(!this.state.waiting && !this.state.gameOver,
             <div className="model-btn">
               <h2>{this.props.winner ? this.props.saying1 : this.props.saying2}</h2>
@@ -50,11 +51,9 @@ class Modal extends React.Component {
               <button className="btn" onClick={() => this.handleLeaveGame()}> Leave Game </button>
             </div>
           )}
+          {/* display saying for waiting or missed turn */}
           {renderIf(this.state.waiting && !this.state.gameOver,
             <h2>{this.props.saying}</h2>
-          )}
-          {renderIf(this.state.waiting,
-            <h2>{this.props.saying3}</h2>
           )}
           {renderIf(this.state.gameOver,
             <div className="game-over">
