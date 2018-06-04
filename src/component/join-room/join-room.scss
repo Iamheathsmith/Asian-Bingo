@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+
+.joinroom-form {
+  margin-left: 30px;
+}
+
+.joinroom-div {
+  font-family: 'Amatic SC', cursive;
+  letter-spacing: 1px;
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.joinroom-input {
+  width: 150px;
+  height: 20px;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.joinroom-button {
+  display: inherit;
+  border: 1px solid;
+  border-radius: 3px;
+  background-color:  rgb(170, 255, 0);
+  height: 20px;
+  width: 100px;
+}

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+
+
+header {
+  font-family: 'Amatic SC', cursive;
+  font-size: 56px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.autoBuild {
+  border: 1px solid;
+  border-radius: 3px;
+  background-color: rgb(170, 255, 0);
+  height: 20px;
+  width: 100px;
+  margin: 20px;
+}
+
+.boxes {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+//--------------------------------------
+.progress-bar {
+  font-size: 16px;
+  width: 14em;
+  height: 1.5em;
+  margin: 1.5em auto 0 auto;
+  border: solid 1px black;
+  background: pink;
+  border-radius: 0.5em;
+  overflow: hidden;
+}
+
+.progress {
+  animation-name: progress;
+  animation-duration: 10s;
+  font-size: 16px;
+  width: 14em;
+  height: 1.5em;
+  padding: 0;
+  background-color: green;
+  margin-left: 0;
+}
+
+@keyframes progress {
+  from { margin-left: 100%; }
+  to { margin-left: 0; }
+}
+
+//--------------------------------------
+
+@media screen and (max-width: 640px) {
+  .input-area {
+    margin: 0 auto;
+    width: 300px;
+    float: none;
+  }
+
+  .location-name {
+    font-size: 9vw;
+  }
+}
+
+@media screen and (min-width: 680px) {
+  .boxes {
+    width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  header {
+    font-family: 'Amatic SC', cursive;
+    font-size: 40px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+}
