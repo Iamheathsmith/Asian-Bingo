@@ -22,6 +22,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('I am in the APP');
     if (this.props.socket)
       store.dispatch({ type: 'SOCKET_SET', payload: this.props.socket });
   }
@@ -32,10 +33,10 @@ class App extends React.Component {
         <Provider store={store}>
           <BrowserRouter>
             <React.Fragment>
-              <Route exact path="/game" component={Content}/>
               <Route exact path="/" component={Landing}/>
-              <Route exact path="/WaitingRoom" component={WaitingRoom}/>
-              <Route exact path="/JoinRoom" component={JoinRoom}/>
+              <Route exact path="/game" component={() => store.getState().socket ? <Content /> : <Redirect to="/" />}/>
+              <Route exact path="/WaitingRoom" component={() => store.getState().socket ? <WaitingRoom /> : <Redirect to="/" />}/>
+              <Route exact path="/JoinRoom" component={() => store.getState().socket ? <JoinRoom /> : <Redirect to="/" />}/>
             </React.Fragment>
           </BrowserRouter>
         </Provider>
