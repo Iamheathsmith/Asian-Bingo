@@ -50,13 +50,13 @@ class Content extends React.Component {
       this.socket.emit('REDIRECT_PLAYERS', this.roomCode, '/game');
     } else {
       this.setState({myTurn: true});
-      console.log('SETTING TURN');
     }
   }
 
   componentDidUpdate() {
+    clearTimeout(this.pickRandom);
     if (this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame) {
-      this.pickRandom = setTimeout(() => this.handleRandomPlay(this.state.board), 5000);
+      this.pickRandom = setTimeout(() => this.handleRandomPlay(this.state.board), 15000);
     }
     if (!this.state.myTurn && this.state.lastPlayed === null) {
       clearTimeout(this.pickRandom);
@@ -66,11 +66,9 @@ class Content extends React.Component {
   componentWillMount() {
     this.socket.on('SWITCH TURNS', data => {
       this.handleUpdateData(data);
-      this.setState({ myTurn: true, failed2Play: false });
     });
 
     this.socket.on('GAME OVER', data => {
-      console.log('kill the countdown');
       clearTimeout(this.pickRandom);
       this.setState({gameOver: true, failed2Play: false});
     });
@@ -147,16 +145,18 @@ class Content extends React.Component {
     let checkGame = Check.checkWinner(this.state.board);
     if (checkGame === 'winner') {
       console.log('FOUND WINNER', this.socket.id);
-      this.socket.emit('GAME WON', this.roomCode, this.socket.id);
       this.setState({winner: true, gameOver: true});
+      this.socket.emit('GAME WON', this.roomCode, this.socket.id);
     }
   }
 
   handleAutoBuild(grid) {
     if (this.state.setup) {
       let newBoard = RandomSpot.getRandom(grid);
-      this.setState({board: newBoard, number: 25, setup: false, preGame: true});
-      this.socket.emit('READY FOR GAME', this.roomCode);
+      return Promise.resolve(this.setState({board: newBoard, number: 25, setup: false, preGame: true}))
+        .then(() => {
+          this.socket.emit('READY FOR GAME', this.roomCode);
+        });
     }
   }
 
@@ -170,7 +170,8 @@ class Content extends React.Component {
           }
         }
       }
-      return Promise.resolve(this.setState({board: temp}))
+      console.log('UPDATING BOARD WITH OTHER PLAYERS PLAY');
+      return Promise.resolve(this.setState({board: temp, myTurn: true, failed2Play: false }))
         .then(() => {
           this.handleCheckForWinner()
           ;});
@@ -182,8 +183,7 @@ class Content extends React.Component {
       let temp = this.state.board;
       temp[e.location.arr][e.location.idx].mark = true;
       let played = temp[e.location.arr][e.location.idx].val;
-      // console.log('PLAYER PLAYED HERE', {i:e.location.arr, y:e.location.idx});
-      console.log('PLAYER PLAYED');
+      console.log('PLAYER PLAYED, UPDATE ON STATE');
       return Promise.resolve(this.setState({board: temp, myTurn: false, lastPlayed: played}))
         .then(() => {
           this.handleCheckForWinner();

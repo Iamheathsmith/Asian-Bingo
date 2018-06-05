@@ -35,7 +35,7 @@ class JoinRoom extends React.Component {
       this.setState({'joinError': message});
     });
 
-    this.socket.on('JOINED_ROOM', (game, instance, maxPlayers) => {
+    this.socket.on('JOINED_ROOM', (maxPlayers) => {
       let code = this.state.code.toUpperCase();
       let nickname = this.state.nickname.toUpperCase();
 
