@@ -33,13 +33,13 @@ class WaitingRoom extends React.Component {
       // receiving a room w/code back from back end
       this.socket.on('SEND_ROOM', data => {
         data = JSON.parse(data);
-        let {roomCode, game, maxPlayers, roomHost} = data;
+        let {roomCode, numPlayers, roomHost} = data;
 
         this.props.setRoom({
-          hostName: this.props.room.hostName,
+          nickname: this.props.room.hostName,
           roomCode: roomCode,
           isHost: this.isHost,
-          numPlayers: maxPlayers,
+          numPlayers: numPlayers,
           roomHost: roomHost,
         });
 
@@ -49,7 +49,7 @@ class WaitingRoom extends React.Component {
         let socket = this.socket;
 
         this.props.setSocket(socket);
-        this.socket.emit('JOIN_ROOM', roomCode, this.props.room.hostName);
+        this.socket.emit('JOIN_ROOM', roomCode, this.props.room.nickname, this.socket.id);
 
         console.log('__ROOM_CODE__', this.props.room.roomCode);
       });
@@ -65,6 +65,7 @@ class WaitingRoom extends React.Component {
 
     // listens for when host clicks start game, redirects players to gameview
     this.socket.on('REDIRECT', path => {
+      this.props.updateRoom(this.state.playerNames);
       this.setState({ redirectToGameView: true });
     });
 
@@ -102,7 +103,7 @@ class WaitingRoom extends React.Component {
                 <td className="left-tr">Players:</td>
               </tr>
               <tr>
-                <td colSpan="2" className="names">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.join(', ')}</td>
+                <td colSpan="2" className="names">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.map(player => player.name).join(', ')}</td>
               </tr>
             </tbody>
           </table>
@@ -110,7 +111,7 @@ class WaitingRoom extends React.Component {
           <br /><br />
 
           {renderIf(this.isHost && this.state.numPlayers >= 2, <Link to={{ pathname: '/game' }}>
-            <button type="button" className="startgame-button submit" id="start-game">Start Game</button>
+            <button type="button" className="startgame-button submit" id="start-game" onClick={() => this.props.updateRoom(this.state.playerNames)}>Start Game</button>
           </Link>)}
 
           {renderIf(this.isHost && this.state.numPlayers < 2, <span className="tooltip">Waiting for players to join...</span>)}
@@ -133,6 +134,7 @@ let mapStateToProps = state => ({
 
 let mapDispatchToProps = dispatch => ({
   setRoom: room => dispatch(roomActions.roomSet(room)),
+  updateRoom: num => dispatch(roomActions.updateRoom(num)),
   setSocket: socket => dispatch(socketActions.socketSet(socket)),
 });
 

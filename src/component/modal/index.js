@@ -36,7 +36,8 @@ class Modal extends React.Component {
   }
 
   handleLeaveGame() {
-    this.socket.emit('END_GAME', this.roomCode);
+    this.socket.emit('END_GAME', this.roomCode, this.props.room.nickname);
+    // this.socket.emit('LEAVE_ROOM', this.roomCode);
   }
 
   render() {
