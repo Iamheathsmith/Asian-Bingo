@@ -94,7 +94,7 @@ class Content extends React.Component {
           this.setState({myTurn: false});
         }
       } else {
-        if (data === this.socket.id) {
+        if (this.isHost) {
           this.setState({myTurn: true});
         } else {
           this.setState({myTurn: false});
@@ -107,11 +107,7 @@ class Content extends React.Component {
     });
 
     this.socket.on('PLAY GAME', () => {
-      if (!this.isHost) {
-        this.setState({ setup: false, preGame: false , counter: false});
-      } else {
-        this.setState({ setup: false, preGame: false , counter: false});
-      }
+      this.setState({ setup: false, preGame: false , counter: false});
     });
   }
 

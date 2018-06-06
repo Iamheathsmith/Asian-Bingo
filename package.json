@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "bundle": "webpack",
-    "watch": "webpack-dev-server --inline --hot --host 172.16.9.137",
+    "watch": "webpack-dev-server --inline --hot",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "heroku-postbuild": "webpack -p --progress",
