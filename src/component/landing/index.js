@@ -1,6 +1,5 @@
 import './landing.scss';
 import React from 'react';
-import Nav from '../nav/index';
 import { connect } from 'react-redux';
 import { renderIf } from '../../lib/utils';
 import { Link, Redirect } from 'react-router-dom';
@@ -38,8 +37,6 @@ class Landing extends React.Component {
   render() {
     return (
       <div>
-        <h1 className="logo"> The Last Bingo you will ever play!</h1>
-        {/* <Nav /> */}
         <div className="input-forms">
           <div className="leftSide">
             <h2 className="welcome left"> Host a Game</h2>
@@ -55,6 +52,8 @@ class Landing extends React.Component {
             <h2 className="welcome right"> Join a Game</h2>
             <button className="btn-join"><Link to={'/JoinRoom'}>Join Game</Link></button>
           </div>
+        </div>
+        <div className="intro"><h6>Welcome to Bingo!</h6> <br/> Get 5 different ROW/COLUMN OR DIAGONAL in a row to WIN! play up to 4 players at a time. You all play on different game boards so If you play a number, it might help them out or cause them to WIN!
         </div>
         {renderIf(this.state.redirect, <Redirect to="/waitingroom" />)}
       </div>

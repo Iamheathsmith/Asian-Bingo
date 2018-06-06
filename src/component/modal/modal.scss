@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
+
 .modal {
   margin: 20vw;
   font-size: 30px;
@@ -6,14 +8,21 @@
 }
 
 .winner {
+  font-family: 'VT323', monospace;
   font-size: 100px;
+}
+
+.model-btn, .modal-saying, .game-over {
+  font-family: 'VT323', monospace;
 }
 
 .btn {
   text-transform: capitalize;
+  font-family: 'VT323', monospace;
   background: white;
   width: 100px;
   height: 30px;
+  padding: 20px;
   border-radius: 3px;
   font-size: 12px;
 }

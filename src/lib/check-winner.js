@@ -36,12 +36,12 @@ module.exports = new class {
       }
     }
 
-    // if (holder.length >= 5) {
-    //   return 'winner';
-    // }
-    if (holder.length >= 1) {
+    if (holder.length >= 5) {
       return 'winner';
     }
+    // if (holder.length >= 1) {
+    //   return 'winner';
+    // }
   }
 
 

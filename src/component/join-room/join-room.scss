@@ -1,17 +1,22 @@
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
 
 .joinroom-form {
   margin-left: 30px;
 }
 
+.joinroom-h1 {
+  font-family: 'VT323', monospace;
+}
+
 .joinroom-div {
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
   letter-spacing: 1px;
   font-size: 24px;
   margin-bottom: 5px;
 }
 
 .joinroom-input {
+  font-family: 'VT323', monospace;
   width: 150px;
   height: 20px;
   font-size: 18px;
@@ -19,10 +24,21 @@
 }
 
 .joinroom-button {
-  display: inherit;
-  border: 1px solid;
-  border-radius: 3px;
-  background-color:  rgb(170, 255, 0);
-  height: 20px;
-  width: 100px;
+  border: 0;
+  background: #0087cc;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #006599;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  margin-left: 5%;
+  margin: 15px;
+  outline: 0;
+  padding: 5px 10px;
+  transition: all .1s linear;
+}
+
+.joinroom-button:active{
+  box-shadow: 0 2px 0 #006599;
+  transform: translateY(3px);
 }

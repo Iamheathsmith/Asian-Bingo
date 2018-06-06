@@ -1,38 +1,62 @@
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
 
-.logo {
-  font-family: 'Amatic SC', cursive;
-  font-size: 50px;
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
+
+a {
+  text-decoration: none;
+  color: white;
 }
 
 .leftSide {
-  display: inline-block;
-  outline: 1px solid black;
+  border: 1px solid;
+  background: linear-gradient(#ffcb6a 0%, #f0a733 50%, #f2a324 92%, #fcbc44);
+  border-radius: 2px;
+  box-shadow: 0px 1px 1px rgba(000,000,000,0.5), inset 1px 2px 0px rgba(255,255,255,0.4);
   text-align: center;
   padding: 10px;
   margin-right: 20px;
 }
 
 .left, .right {
+  font-family: 'VT323', monospace;
+  font-size: 24px;
   margin: 5px;
 }
 
 .rightSide {
   display: inline-block;
-  outline: 1px solid black;
+  border: 1px solid;
+  background: linear-gradient(#ffcb6a 0%, #f0a733 50%, #f2a324 92%, #fcbc44);
+  border-radius: 2px;
+  box-shadow: 0px 1px 1px rgba(000,000,000,0.5), inset 1px 2px 0px rgba(255,255,255,0.4);
   text-align: center;
   padding: 10px;
 }
 
 .btn-host, .btn-join {
-  border: 1px solid;
-  border-radius: 3px;
-  background-color:  rgb(170, 255, 0);
-  height: 20px;
-  width: 80px;
+  border: 0;
+  background: #0087cc;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #006599;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  margin-left: 5%;
+  margin: 15px;
+  outline: 0;
+  padding: 5px 10px;
+  transition: all .1s linear;
+}
+
+.btn-host:active, .btn-join:active {
+  box-shadow: 0 2px 0 #006599;
+  transform: translateY(3px);
+}
+
+h6 {
+  font-family: 'VT323', monospace;
+  font-size: 26px;
+  text-decoration: underline;
 }
 
 .input-forms {
@@ -43,7 +67,13 @@
   justify-content: center;
 }
 
-@media screen and (max-width: 445px) {
+.intro {
+  font-family: 'Sunflower', sans-serif;
+  margin: 20px;
+  text-align: center;
+}
+
+@media screen and (max-width: 540px) {
   .rightSide{
     margin-top: 20px;
   }

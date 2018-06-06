@@ -37,7 +37,6 @@ class Modal extends React.Component {
 
   handleLeaveGame() {
     this.socket.emit('END_GAME', this.roomCode, this.props.room.nickname);
-    // this.socket.emit('LEAVE_ROOM', this.roomCode);
   }
 
   render() {
@@ -54,7 +53,7 @@ class Modal extends React.Component {
           )}
           {/* display saying for waiting or missed turn */}
           {renderIf(this.state.waiting && !this.state.gameOver,
-            <h2>{this.props.saying}</h2>
+            <h2 className="modal-saying">{this.props.saying}</h2>
           )}
           {renderIf(this.state.gameOver,
             <div className="game-over">

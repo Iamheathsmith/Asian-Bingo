@@ -6,6 +6,7 @@ import Content from './content';
 import Landing from './landing';
 import WaitingRoom from './waiting-room';
 import JoinRoom from './join-room';
+import Nav from '../component/nav/index';
 import {Provider} from 'react-redux';
 import createStore from '../lib/app-create-store';
 import {BrowserRouter, Route, Redirect} from 'react-router-dom';
@@ -22,7 +23,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('I am in the APP');
     if (this.props.socket)
       store.dispatch({ type: 'SOCKET_SET', payload: this.props.socket });
   }
@@ -33,6 +33,7 @@ class App extends React.Component {
         <Provider store={store}>
           <BrowserRouter>
             <React.Fragment>
+              <Nav />
               <Route exact path="/" component={Landing}/>
               <Route exact path="/game" component={() => store.getState().socket ? <Content /> : <Redirect to="/" />}/>
               <Route exact path="/WaitingRoom" component={() => store.getState().socket ? <WaitingRoom /> : <Redirect to="/" />}/>
