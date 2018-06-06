@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
 
 .modal {
   margin: 20vw;
@@ -13,14 +13,16 @@
 
 .counter {
   font-size: 30vw;
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
 }
 
 .btn {
   text-transform: capitalize;
+  font-family: 'VT323', monospace;
   background: white;
   width: 100px;
   height: 30px;
+  padding: 10px;
   border-radius: 3px;
   font-size: 12px;
 }

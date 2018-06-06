@@ -1,6 +1,7 @@
 
 import './content.scss';
 import React from 'react';
+import Timer from '../timer/index';
 import Modal from '../modal/index';
 import {connect} from 'react-redux';
 import Counter from '../count-down/index';
@@ -72,7 +73,7 @@ class Content extends React.Component {
     });
 
     this.socket.on('REMOVE_PLAYER', name => {
-      this.props.removePlayer(name);
+      this.props.removePlayer(name, this.socket);
     });
 
     this.socket.on('GAME OVER', name => {
@@ -239,32 +240,41 @@ class Content extends React.Component {
   render() {
     return (
       <div className="main">
-        <header>Welcome to Bingo! The last game you will ever play?</header>
+        <header>get ready to play!</header>
 
-        <button className="autoBuild" onClick={() => this.handleAutoBuild(this.state.board)}> Auto Build </button>
+        <div className="game-area">
+          <button className="autoBuild" onClick={() => this.handleAutoBuild(this.state.board)}> Auto Build </button>
 
-        <div className="scores">
-          {this.props.room.player.map((item, key) => {
-            return <h3 className="playerScore"key={key}>{item.name}: {item.wins}</h3>;
-          })
-          }
+          <div className="scores">
+            {this.props.room.player.map((item, key) => {
+              return <h3 className="playerScore"key={key}>{item.name}: {item.wins}</h3>;
+            })
+            }
+          </div>
+
+          {renderIf(this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame,
+            <Timer
+              setTime={15}
+            />
+          )}
+
+          {/* build the board */}
+          <div className="boxes">
+            {this.state.board.map((item, arr) => {
+              return item.map((item, idx) => {
+                return <DisplayBox key={idx}
+                  boxLocation={{arr,idx}}
+                  marked={this.state.board[arr][idx].mark}
+                  value={this.state.board[arr][idx].val}
+                  onPicking={this.handleSubmit}
+                  onPlay={this.handlePlay}
+                />;
+              });
+            })
+            }
+          </div>
         </div>
 
-        {/* build the board */}
-        <div className="boxes">
-          {this.state.board.map((item, arr) => {
-            return item.map((item, idx) => {
-              return <DisplayBox key={idx}
-                boxLocation={{arr,idx}}
-                marked={this.state.board[arr][idx].mark}
-                value={this.state.board[arr][idx].val}
-                onPicking={this.handleSubmit}
-                onPlay={this.handlePlay}
-              />;
-            });
-          })
-          }
-        </div>
         {/* for winner/loser */}
         {renderIf(this.state.gameOver,
           <Modal className="modal-1"
@@ -290,10 +300,6 @@ class Content extends React.Component {
         {/* count down */}
         {renderIf(this.state.counter,
           <Counter />
-        )}
-        {/* progress bar */}
-        {renderIf(this.state.myTurn && !this.state.setup && !this.state.gameOver && !this.state.preGame,
-          <div className="progress-bar"><div className="progress"></div></div>
         )}
       </div>
     );

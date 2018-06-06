@@ -1,30 +1,48 @@
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
 
 
 header {
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
   font-size: 56px;
   text-align: center;
   margin-top: 20px;
   margin-bottom: 30px;
 }
 
-.autoBuild {
-  border: 1px solid;
-  border-radius: 3px;
-  background-color: rgb(170, 255, 0);
-  height: 20px;
-  width: 100px;
-  margin: 20px;
+.game-area {
+  margin: 0 auto;
+  width: 80%;
 }
 
+.autoBuild {
+  border: 0;
+  background: #0087cc;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #006599;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  margin-left: 5%;
+  margin: 15px;
+  outline: 0;
+  padding: 5px 10px;
+  transition: all .1s linear;
+}
+
+.autoBuild:active {
+  box-shadow: 0 2px 0 #006599;
+  transform: translateY(3px);
+}
+
+
 .scores {
-  display: inline-block;
+  display: block;
+  float: right;
 }
 
 .playerScore {
-  float: left;
   font-size: 4vw;
+  font-family: 'VT323', monospace;
   margin-right: 10px;
 }
 
@@ -35,36 +53,6 @@ header {
   flex-wrap: wrap;
   justify-content: center;
 }
-
-//--------------------------------------
-.progress-bar {
-  font-size: 16px;
-  width: 14em;
-  height: 1.5em;
-  margin: 1.5em auto 0 auto;
-  border: solid 1px black;
-  background: pink;
-  border-radius: 0.5em;
-  overflow: hidden;
-}
-
-.progress {
-  animation-name: progress;
-  animation-duration: 10s;
-  font-size: 16px;
-  width: 14em;
-  height: 1.5em;
-  padding: 0;
-  background-color: green;
-  margin-left: 0;
-}
-
-@keyframes progress {
-  from { margin-left: 100%; }
-  to { margin-left: 0; }
-}
-
-//--------------------------------------
 
 @media screen and (max-width: 640px) {
   .input-area {
@@ -90,6 +78,7 @@ header {
 
 @media screen and (min-width: 500px) {
   .playerScore {
+    font-family: 'VT323', monospace;
     font-size: 18px;
     margin-right: 10px;
   }
@@ -103,7 +92,7 @@ header {
 
 @media screen and (max-width: 375px) {
   header {
-    font-family: 'Amatic SC', cursive;
+    font-family: 'VT323', monospace;
     font-size: 40px;
     text-align: center;
     margin-top: 20px;

@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|Sigmar+One');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:700|VT323|Sunflower:300|Sigmar+One');
 
 .waitingroom-table {
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
   font-size: 44px;
 }
 
 .waiting {
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
   text-align: center;
   padding: 10px;
   margin-top: 20px;
@@ -22,25 +22,39 @@ tr {
 }
 
 .right-tr {
+  font-size: 30px;
   padding-left: 10px;
 }
 
 .left-tr {
+  font-size: 30px;
+  padding: 10px;
   margin-right: 10px;
   text-decoration: underline;
 }
 
 .startgame-button {
-  margin-left: 20px;
-  border: 1px solid;
-  border-radius: 3px;
-  background-color: rgb(170, 255, 0);
-  height: 20px;
-  width: 100px;
+  border: 0;
+  background: #0087cc;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #006599;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  margin-left: 5%;
+  margin: 15px;
+  outline: 0;
+  padding: 5px 10px;
+  transition: all .1s linear;
+}
+
+.startgame-button:active {
+  box-shadow: 0 2px 0 #006599;
+  transform: translateY(3px);
 }
 
 .tooltip {
-  font-family: 'Amatic SC', cursive;
+  font-family: 'VT323', monospace;
   margin-left: 30px;
-  font-size: 24px;
+  font-size: 18px;
 }
