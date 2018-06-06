@@ -29,7 +29,7 @@ class JoinRoom extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    this.socket.emit('JOIN_ROOM', this.state.code.toUpperCase(), this.state.nickname.toUpperCase());
+    this.socket.emit('JOIN_ROOM', this.state.code.toUpperCase(), this.state.nickname.toUpperCase(), this.socket.id);
 
     this.socket.on('ERROR_JOIN_ROOM', message => {
       this.setState({'joinError': message});

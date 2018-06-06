@@ -18,6 +18,16 @@ header {
   margin: 20px;
 }
 
+.scores {
+  display: inline-block;
+}
+
+.playerScore {
+  float: left;
+  font-size: 4vw;
+  margin-right: 10px;
+}
+
 .boxes {
   width: 90%;
   margin: 0 auto;
@@ -75,6 +85,19 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .playerScore {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+
+  .scores {
+    float: right;
+    margin-right: 30px;
+    display: inline-block;
   }
 }
 
