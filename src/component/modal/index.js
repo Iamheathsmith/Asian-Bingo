@@ -13,7 +13,7 @@ class Modal extends React.Component {
 
     this.state = {
       waiting: this.props.disabledBTN || false,
-      gameOver: false,
+      gameOver: this.props.everyOneLeft || false,
       redirectToLandingPage: false,
     };
     this.handleUpdateReady = this.handleUpdateReady.bind(this);

@@ -36,6 +36,7 @@ class Content extends React.Component {
       lastPlayed: null,
       counter: false,
       failed2Play: false,
+      everyOneLeft: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
@@ -69,11 +70,16 @@ class Content extends React.Component {
 
   componentWillMount() {
     this.socket.on('SWITCH TURNS', (data, nextGo) => {
+      console.log('data', data);
+      console.log('nextGo', nextGo);
       this.handleUpdateData(data, nextGo);
     });
 
     this.socket.on('REMOVE_PLAYER', name => {
       this.props.removePlayer(name, this.socket);
+      if (this.props.room.player.length < 2) {
+        this.setState({everyOneLeft: true});
+      }
     });
 
     this.socket.on('GAME OVER', name => {
@@ -176,14 +182,15 @@ class Content extends React.Component {
   handleUpdateData(num, nextGo) {
     if (!this.state.myTurn) {
       let temp = this.state.board;
-      for(let i = 0; i < temp.length; i++) {
-        for (let y = 0; y < temp[i].length; y++) {
-          if (temp[i][y].val === num) {
-            temp[i][y].mark = true;
+      if (num !== undefined) {
+        for(let i = 0; i < temp.length; i++) {
+          for (let y = 0; y < temp[i].length; y++) {
+            if (temp[i][y].val === num) {
+              temp[i][y].mark = true;
+            }
           }
         }
       }
-      console.log('UPDATING BOARD WITH OTHER PLAYERS PLAY');
       if (this.props.room.numPlayers > 2) {
         if (nextGo === this.socket.id) {
           return Promise.resolve(this.setState({board: temp, myTurn: true, failed2Play: false }))
@@ -295,6 +302,12 @@ class Content extends React.Component {
           <Modal className="modal-3"
             disabledBTN={true}
             saying='You Missed your turn, make sure you click something'
+          />
+        )}
+        {renderIf(this.state.everyOneLeft,
+          <Modal className="modal-4"
+            everyOneLeft={true}
+            // saying='Everyone Left, return to Home page'
           />
         )}
         {/* count down */}

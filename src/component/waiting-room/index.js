@@ -57,6 +57,7 @@ class WaitingRoom extends React.Component {
 
     // update number of players in waiting room
     this.socket.on('TRACK_PLAYERS', (num, names) => {
+      console.log('test', num, names);
       this.setState({
         numPlayers: num,
         playerNames: names,
@@ -103,7 +104,8 @@ class WaitingRoom extends React.Component {
                 <td className="left-tr">Players:</td>
               </tr>
               <tr>
-                <td colSpan="2" className="names">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.map(player => player.name).join(', ')}</td>
+                <td colSpan="2" className="names">{this.state.playerNames.map(player => player.name).join(', ')}</td>
+                {/* <td colSpan="2" className="names">{renderIf(this.state.numPlayers === 0, 'None yet!')} {this.state.playerNames.map(player => player.name).join(', ')}</td> */}
               </tr>
             </tbody>
           </table>
